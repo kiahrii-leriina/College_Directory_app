@@ -1,0 +1,26 @@
+package org.dbc.cda.controller;
+
+import org.dbc.cda.entities.StudentProfile;
+import org.dbc.cda.services.StudentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/student")
+public class StudentController {
+
+	@Autowired
+	private StudentService studentService;
+	
+	@PostMapping("/{userId}/{dname}")
+	public ResponseEntity<?> saveStudent(@RequestBody StudentProfile student, @PathVariable long userId, @PathVariable String dname){
+		return studentService.saveStudent(student, userId, dname);
+	}
+	
+	
+}
