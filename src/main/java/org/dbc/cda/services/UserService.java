@@ -12,5 +12,9 @@ public interface UserService {
 
 	ResponseEntity<?> activateAccount(long userid, int otp);
 
+	ResponseEntity<?> deleteUser(long userid);
+
+	ResponseEntity<?> UserLogin(String email, String password);
+
 
 }

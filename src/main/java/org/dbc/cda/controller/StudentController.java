@@ -4,6 +4,7 @@ import org.dbc.cda.entities.StudentProfile;
 import org.dbc.cda.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,11 @@ public class StudentController {
 	@PostMapping("/{userId}/{dname}")
 	public ResponseEntity<?> saveStudent(@RequestBody StudentProfile student, @PathVariable long userId, @PathVariable String dname){
 		return studentService.saveStudent(student, userId, dname);
+	}
+	
+	@DeleteMapping("/{sid}")
+	public ResponseEntity<?> deleteStudent(@PathVariable long sid){
+		return studentService.deleteStudent(sid);
 	}
 	
 	

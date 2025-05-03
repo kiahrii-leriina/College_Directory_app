@@ -1,11 +1,16 @@
 package org.dbc.cda.serviceimpl;
 
 import java.util.List;
+
+
 import java.util.Optional;
 
+import org.dbc.cda.dao.FacultyDao;
+import org.dbc.cda.dao.StudentDao;
 import org.dbc.cda.dao.UserDao;
-
+import org.dbc.cda.dao.UserEnrollmentDao;
 import org.dbc.cda.entities.User;
+import org.dbc.cda.entities.UserEnrollment;
 import org.dbc.cda.exceptionClass.UserNotFoundException;
 import org.dbc.cda.responseStructure.ResponseStructure;
 import org.dbc.cda.services.UserService;
@@ -16,8 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,7 +29,14 @@ public class UserServiceImpl implements UserService {
 	private UserDao userDao;
 	@Autowired
 	private EmailService emailService;
-
+	@Autowired
+	private UserEnrollmentDao userEnrollmentDao;
+	@Autowired
+	private StudentDao studentDao;
+	@Autowired
+	private FacultyDao facultyDao;
+	
+	
 	@Override
 	public ResponseEntity<ResponseStructure<User>> saveUser(User user) {
 
@@ -34,6 +44,10 @@ public class UserServiceImpl implements UserService {
 		user.setStatus(UserStatus.INACTIVE);
 		user.setOtp(otp);
 		User saveuser = userDao.saveUser(user);
+		
+		UserEnrollment enrollment = new UserEnrollment();
+		enrollment.setUser(saveuser);
+		UserEnrollment saveEnrollment = userEnrollmentDao.saveEnrollment(enrollment);
 		emailService.registeredEmail(saveuser);
 
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.CREATED.value())
@@ -76,7 +90,43 @@ public class UserServiceImpl implements UserService {
 
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value())
 				.message(" ACCOUNT ACTIVATED SUCCESSFULLY").body(user).build();
+
+		ResponseEntity re = ResponseEntity.status(HttpStatus.OK).body(rs);
+
+		return re;
+	}
+
+	@Override
+	public ResponseEntity<?> deleteUser(long userid) {
+		Optional<User> byId = userDao.findById(userid);
+		if (byId.isEmpty()) {
+			throw UserNotFoundException.builder().message("Invalid user ID: " + userid).build();
+		}
+		User user = byId.get();
+		long uid = user.getId();
+		userDao.deleteUser(user);
+		studentDao.deleteStudent(uid);
+		facultyDao.deleteFaculty(uid);
 		
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value())
+				.message("User deleted successfully (delete id " + userid + ")").body(user).build();
+
+		ResponseEntity re = ResponseEntity.status(HttpStatus.OK).body(rs);
+		return re;
+	}
+
+	@Override
+	public ResponseEntity<?> UserLogin(String email, String password) {
+
+		Optional<User> optional = userDao.findByEmailAndPassword(email, password);
+		if (optional.isEmpty()) {
+			throw UserNotFoundException.builder().message("Invalid credentials").build();
+		}
+
+		User user = optional.get();
+
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value()).message("Login successfull")
+				.body(user).build();
 		ResponseEntity re = ResponseEntity.status(HttpStatus.OK).body(rs);
 
 		return re;

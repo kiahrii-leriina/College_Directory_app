@@ -2,6 +2,7 @@ package org.dbc.cda.serviceimpl;
 
 import java.util.Optional;
 
+import org.dbc.cda.dao.AdminDao;
 import org.dbc.cda.dao.DepartmentDao;
 import org.dbc.cda.dao.UserDao;
 import org.dbc.cda.entities.AdminProfile;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class AdminServiceImpl implements AdminService {
 
 	@Autowired
-	private AdminRepository adminRepository;
+	private AdminDao adminDao;
 	@Autowired
 	private UserDao userDao;
 	@Autowired
@@ -47,7 +48,7 @@ public class AdminServiceImpl implements AdminService {
 		admin.setDepartment(department);
 		admin.setUsername(user.getUsername());
 
-		AdminProfile saveAdmin = adminRepository.save(admin);
+		AdminProfile saveAdmin = adminDao.saveAdmin(admin);
 
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.CREATED.value())
 				.message("YOUR PROFILE HAS BEEN CREATED SUCCESSFULLY").body(saveAdmin).build();

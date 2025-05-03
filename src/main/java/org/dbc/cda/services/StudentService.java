@@ -7,5 +7,7 @@ public interface StudentService {
 
 	ResponseEntity<?> saveStudent(StudentProfile student, long userId, String dname);
 
+	ResponseEntity<?> deleteStudent(long sid);
+
 	
 }

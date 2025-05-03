@@ -1,6 +1,7 @@
 package org.dbc.cda.exceptionhandler;
 
 import org.dbc.cda.exceptionClass.NoDepartmentFoundException;
+import org.dbc.cda.exceptionClass.NoFacultyException;
 import org.dbc.cda.exceptionClass.UserNotFoundException;
 import org.dbc.cda.responseStructure.ResponseStructure;
 import org.springframework.http.HttpStatus;
@@ -29,4 +30,28 @@ public class ExceptionHandlerClass {
 		ResponseEntity re = ResponseEntity.status(HttpStatus.NOT_FOUND).body(rs);
 		return re;
 	}
+	
+	@ExceptionHandler(NoFacultyException.class)
+	public ResponseEntity<?> noFacultyException(NoFacultyException e){
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.NOT_FOUND.value()).message(e.getMessage())
+				.body(null).build();
+		
+		ResponseEntity re = ResponseEntity.status(HttpStatus.NOT_FOUND).body(rs);
+		return re;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

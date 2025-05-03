@@ -1,5 +1,10 @@
 package org.dbc.cda.repository;
 
-public interface CourseRepository {
+
+import org.dbc.cda.entities.Course;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CourseRepository extends JpaRepository<Course, Long>{
+
 
 }

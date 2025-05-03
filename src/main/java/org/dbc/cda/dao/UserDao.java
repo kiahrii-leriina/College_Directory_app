@@ -31,6 +31,18 @@ public class UserDao {
 		return userRepository.findByOtp(otp);
 	}
 
+	public void deleteById(long userid) {
+		userRepository.deleteById(userid);
+	}
+
+	public void deleteUser(User user) {
+		userRepository.delete(user);
+	}
+
+	public Optional<User> findByEmailAndPassword(String email, String password) {
+		return userRepository.findByEmailAndPassword(email, password);
+	}
+
 	
 
 

@@ -6,7 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,16 +13,15 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Enrollment {
-
+@AllArgsConstructor
+public class UserEnrollment {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	
 	@ManyToOne
-	private StudentProfile studentProfile;
-	@ManyToOne
-	private Course course;
+	private User user;
+
 }

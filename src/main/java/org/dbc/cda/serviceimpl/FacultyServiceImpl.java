@@ -42,18 +42,34 @@ public class FacultyServiceImpl implements FacultyService {
 
 		User user = optionaluser.get();
 		Department department = optionaldept.get();
-		
+
 		faculty.setUsername(user.getUsername());
 		faculty.setUser(user);
 		faculty.setDepartment(department);
-		
+
 		FacultyProfile savefaculty = facultyDao.saveFaculty(faculty);
 
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.CREATED.value())
 				.message("YOUR PROFILE HAS BEEN CREATED SUCCESSFULLY").body(faculty).build();
-		
+
 		ResponseEntity re = ResponseEntity.status(HttpStatus.CREATED).body(rs);
 
+		return re;
+	}
+
+	@Override
+	public ResponseEntity<?> deleteFaculty(long fid) {
+
+		Optional<FacultyProfile> byId = facultyDao.findById(fid);
+		if (byId.isEmpty()) {
+			throw UserNotFoundException.builder().message("Invalid user id").build();
+		}
+
+		facultyDao.deleteFaculty(fid);
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value())
+				.message("User Deleted Successfully").body(null).build();
+		
+		ResponseEntity re = ResponseEntity.status(HttpStatus.OK).body(rs);
 		return re;
 	}
 }

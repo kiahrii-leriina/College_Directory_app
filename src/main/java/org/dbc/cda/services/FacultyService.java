@@ -6,5 +6,7 @@ import org.springframework.http.ResponseEntity;
 public interface FacultyService {
 
 	ResponseEntity<?> saveFaculty(FacultyProfile faculty, long userId, String dName);
+
+	ResponseEntity<?> deleteFaculty(long fid);
 	
 }
