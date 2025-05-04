@@ -1,5 +1,6 @@
 package org.dbc.cda.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.dbc.cda.entities.Course;
@@ -19,6 +20,14 @@ public class CourseDao {
 
 	public Course saveCourse(Course course) {
 		return courseRepository.save(course);
+	}
+
+	public void deleteById(long id) {
+		courseRepository.deleteById(id);
+	}
+
+	public List<Course> findAllCourse() {
+		return courseRepository.findAll();
 	}
 
 }

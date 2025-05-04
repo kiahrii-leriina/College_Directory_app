@@ -1,5 +1,6 @@
 package org.dbc.cda.exceptionhandler;
 
+import org.dbc.cda.exceptionClass.NoCourseFound;
 import org.dbc.cda.exceptionClass.NoDepartmentFoundException;
 import org.dbc.cda.exceptionClass.NoFacultyException;
 import org.dbc.cda.exceptionClass.UserNotFoundException;
@@ -16,42 +17,36 @@ public class ExceptionHandlerClass {
 	public ResponseEntity<?> userNotFoundException(UserNotFoundException e) {
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.NOT_FOUND.value()).message(e.getMessage())
 				.body(null).build();
-		
+
 		ResponseEntity re = ResponseEntity.status(HttpStatus.NOT_FOUND).body(rs);
 		return re;
 	}
-	
+
 	@ExceptionHandler(NoDepartmentFoundException.class)
 
-	public ResponseEntity<?> noDepartmentFoundException(NoDepartmentFoundException e){
+	public ResponseEntity<?> noDepartmentFoundException(NoDepartmentFoundException e) {
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.NOT_FOUND.value()).message(e.getMessage())
 				.body(null).build();
-		
+
 		ResponseEntity re = ResponseEntity.status(HttpStatus.NOT_FOUND).body(rs);
 		return re;
 	}
-	
+
 	@ExceptionHandler(NoFacultyException.class)
-	public ResponseEntity<?> noFacultyException(NoFacultyException e){
+	public ResponseEntity<?> noFacultyException(NoFacultyException e) {
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.NOT_FOUND.value()).message(e.getMessage())
 				.body(null).build();
-		
+
 		ResponseEntity re = ResponseEntity.status(HttpStatus.NOT_FOUND).body(rs);
 		return re;
 	}
+
+	@ExceptionHandler(NoCourseFound.class)
+	public ResponseEntity<?> noCourseFound(NoCourseFound e) {
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.NOT_FOUND.value()).message(e.getMessage())
+				.body(e).build();
+		ResponseEntity re = ResponseEntity.status(HttpStatus.NOT_FOUND).body(rs);
+		return re;
+	}
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

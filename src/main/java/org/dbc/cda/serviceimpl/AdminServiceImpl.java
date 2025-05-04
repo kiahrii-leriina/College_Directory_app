@@ -1,5 +1,7 @@
 package org.dbc.cda.serviceimpl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.dbc.cda.dao.AdminDao;
@@ -52,9 +54,71 @@ public class AdminServiceImpl implements AdminService {
 
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.CREATED.value())
 				.message("YOUR PROFILE HAS BEEN CREATED SUCCESSFULLY").body(saveAdmin).build();
-		
+
 		ResponseEntity re = ResponseEntity.status(HttpStatus.CREATED).body(rs);
 
 		return re;
 	}
+
+	@Override
+	public ResponseEntity<?> deleteAdminProfile(long id) {
+
+		Optional<AdminProfile> byId = adminDao.findById(id);
+		if (byId.isEmpty()) {
+			throw UserNotFoundException.builder().message("Invalid user id " + id).build();
+		}
+		adminDao.deleteById(id);
+
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value())
+				.message("Admin Profile deleted successfully").body(null).build();
+
+		ResponseEntity re = ResponseEntity.status(HttpStatus.OK).body(rs);
+		return re;
+	}
+
+	@Override
+	public ResponseEntity<?> findAllAdmin() {
+
+		List<AdminProfile> allAdmin = adminDao.findAllAdmin();
+		if (allAdmin.isEmpty()) {
+			throw UserNotFoundException.builder().message("No admin profile found").build();
+		}
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.FOUND.value())
+				.message("Lisst of all Admins").body(allAdmin).build();
+
+		ResponseEntity re = ResponseEntity.status(HttpStatus.FOUND).body(rs);
+		return re;
+	}
+
+	@Override
+	public ResponseEntity<?> findAdminByDepartment(String dName) {
+
+		List<AdminProfile> allAdmin = adminDao.findAllAdmin();
+		if (allAdmin.isEmpty()) {
+			throw UserNotFoundException.builder().message("No admin profile found").build();
+		}
+
+		Optional<Department> byName = departmentDao.findByName(dName);
+		if (byName.isEmpty()) {
+			throw NoDepartmentFoundException.builder().message("No Department Found").build();
+		}
+
+		List<AdminProfile> faabd = new ArrayList<>();
+		for (AdminProfile u : allAdmin) {
+			if (u.getDepartment().getName().equalsIgnoreCase(dName)) {
+				faabd.add(u);
+			}
+		}
+
+		if (faabd.isEmpty()) {
+			throw UserNotFoundException.builder().message("No admin found in the department " + dName).build();
+		}
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.FOUND.value())
+				.message("List of Admins in the department " + dName).body(faabd).build();
+		
+		ResponseEntity re = ResponseEntity.status(HttpStatus.FOUND).body(rs);
+
+		return re;
+	}
+
 }

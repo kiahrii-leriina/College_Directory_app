@@ -1,16 +1,21 @@
 package org.dbc.cda.serviceimpl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.dbc.cda.dao.CourseDao;
 import org.dbc.cda.dao.DepartmentDao;
 import org.dbc.cda.dao.FacultyDao;
+import org.dbc.cda.entities.AdminProfile;
 import org.dbc.cda.entities.Course;
 import org.dbc.cda.entities.Department;
 import org.dbc.cda.entities.FacultyProfile;
 import org.dbc.cda.exceptionClass.DuplicateRegistrationException;
+import org.dbc.cda.exceptionClass.NoCourseFound;
 import org.dbc.cda.exceptionClass.NoDepartmentFoundException;
 import org.dbc.cda.exceptionClass.NoFacultyException;
+import org.dbc.cda.exceptionClass.UserNotFoundException;
 import org.dbc.cda.repository.CourseRepository;
 import org.dbc.cda.repository.DepartmentRepository;
 import org.dbc.cda.repository.FacultyRepository;
@@ -66,6 +71,66 @@ public class CourseServiceImpl implements CourseService {
 
 		return re;
 	}
+	
+	@Override
+	public ResponseEntity<?> deleteCourse(long id) {
+		Optional<Course> byId = courseDao.findById(id);
+		if (byId.isEmpty()) {
+			throw UserNotFoundException.builder().message("Invalid Course id " + id).build();
+		}
+		courseDao.deleteById(id);
+
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value())
+				.message("Course deleted successfully").body(null).build();
+
+		ResponseEntity re = ResponseEntity.status(HttpStatus.OK).body(rs);
+		return re;	
+		
+	}
+	
+	@Override
+	public ResponseEntity<?> findAllCourse() {
+		List<Course> allCourse = courseDao.findAllCourse();
+		if (allCourse.isEmpty()) {
+			throw UserNotFoundException.builder().message("No admin profile found").build();
+		}
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.FOUND.value())
+				.message("List of all Courses").body(allCourse).build();
+
+		ResponseEntity re = ResponseEntity.status(HttpStatus.FOUND).body(rs);
+		return re;	
+		
+	}
+	
+	
+	@Override
+	public ResponseEntity<?> findCourseByDepartment(String dName) {
+		List<Course> allCourse = courseDao.findAllCourse();
+		if (allCourse.isEmpty()) {
+			throw NoCourseFound.builder().message("No admin profile found").build();
+		}
+
+		Optional<Department> byName = departmentDao.findByName(dName);
+		if (byName.isEmpty()) {
+			throw NoDepartmentFoundException.builder().message("No Department Found").build();
+		}
+
+		List<Course> faabd = new ArrayList<>();
+		for (Course u : allCourse) {
+			if (u.getDepartment().getName().equalsIgnoreCase(dName)) {
+				faabd.add(u);
+			}
+		}
+
+		if (faabd.isEmpty()) {
+			throw NoCourseFound.builder().message("No Course found in the department " + dName).build();
+		}
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.FOUND.value())
+				.message("List of Course in the department " + dName).body(faabd).build();
+		
+		ResponseEntity re = ResponseEntity.status(HttpStatus.FOUND).body(rs);
+
+		return re;	}
 
 }
 

@@ -1,5 +1,7 @@
 package org.dbc.cda.serviceimpl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.dbc.cda.dao.DepartmentDao;
@@ -71,4 +73,48 @@ public class StudentServiceImpl implements StudentService {
 		ResponseEntity re = ResponseEntity.status(HttpStatus.OK).body(rs);
 		return re;
 	}
+
+	@Override
+	public ResponseEntity<?> findAllStudent() {
+
+		List<StudentProfile> allStudent = studentDao.findAll();
+		if (allStudent.isEmpty()) {
+			throw UserNotFoundException.builder().message("No student profile found").build();
+		}
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.FOUND.value())
+				.message("All Student Profiles").body(allStudent).build();
+
+		ResponseEntity re = ResponseEntity.status(HttpStatus.FOUND).body(rs);
+		return re;
+	}
+
+	@Override
+	public ResponseEntity<?> findStudentByDepartment(String deptName) {
+
+		List<StudentProfile> all = studentDao.findAll();
+		if (all.isEmpty()) {
+			throw UserNotFoundException.builder().message("No Student profile found").build();
+		}
+		
+		Optional<Department> byName = departmentDao.findByName(deptName);
+		if(byName.isEmpty()) {
+			throw NoDepartmentFoundException.builder().message("No department found "+deptName).build();
+		}
+
+		List<StudentProfile> deptStudents = new ArrayList<>();
+		for (StudentProfile u : all) {
+			if (u.getDepartment().getName().equalsIgnoreCase(deptName)) {
+				deptStudents.add(u);
+			}
+		}
+
+		if (deptStudents.isEmpty()) {
+			throw UserNotFoundException.builder().message("No Students Found in the Department " + deptName).build();
+		}
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.FOUND.value())
+				.message("Student in " + deptName + " Department").body(deptStudents).build();
+		ResponseEntity re = ResponseEntity.status(HttpStatus.FOUND).body(rs);
+		return re;
+	}
+
 }

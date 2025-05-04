@@ -7,5 +7,11 @@ public interface AdminService {
 
 	ResponseEntity<?> saveAdmin(AdminProfile admin, long userId, String dName);
 
+	ResponseEntity<?> deleteAdminProfile(long id);
+
+	ResponseEntity<?> findAllAdmin();
+
+	ResponseEntity<?> findAdminByDepartment(String dName);
+
 
 }

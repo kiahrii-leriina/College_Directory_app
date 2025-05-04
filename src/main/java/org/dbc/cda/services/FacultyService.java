@@ -8,5 +8,10 @@ public interface FacultyService {
 	ResponseEntity<?> saveFaculty(FacultyProfile faculty, long userId, String dName);
 
 	ResponseEntity<?> deleteFaculty(long fid);
+
+	ResponseEntity<?> findAllFaculty();
+
+	ResponseEntity<?> findFacultyByDepartment(String dName);
+
 	
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import java.util.Optional;
 
+import org.dbc.cda.dao.AdminDao;
 import org.dbc.cda.dao.FacultyDao;
 import org.dbc.cda.dao.StudentDao;
 import org.dbc.cda.dao.UserDao;
@@ -35,6 +36,8 @@ public class UserServiceImpl implements UserService {
 	private StudentDao studentDao;
 	@Autowired
 	private FacultyDao facultyDao;
+	@Autowired
+	private AdminDao adminDao;
 	
 	
 	@Override
@@ -107,6 +110,8 @@ public class UserServiceImpl implements UserService {
 		userDao.deleteUser(user);
 		studentDao.deleteStudent(uid);
 		facultyDao.deleteFaculty(uid);
+		adminDao.deleteById(uid);
+		
 		
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value())
 				.message("User deleted successfully (delete id " + userid + ")").body(user).build();

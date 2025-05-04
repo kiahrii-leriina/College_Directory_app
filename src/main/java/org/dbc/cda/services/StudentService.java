@@ -9,5 +9,9 @@ public interface StudentService {
 
 	ResponseEntity<?> deleteStudent(long sid);
 
+	ResponseEntity<?> findAllStudent();
+
+	ResponseEntity<?> findStudentByDepartment(String deptName);
+
 	
 }

@@ -1,5 +1,6 @@
 package org.dbc.cda.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.dbc.cda.entities.FacultyProfile;
@@ -23,5 +24,9 @@ public class FacultyDao {
 
 	public void deleteFaculty(long fid) {
 		facultyRepository.deleteById(fid);
+	}
+
+	public List<FacultyProfile> findAllFaculty() {
+		return facultyRepository.findAll();
 	}
 }

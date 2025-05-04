@@ -1,5 +1,7 @@
 package org.dbc.cda.serviceimpl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.dbc.cda.dao.DepartmentDao;
@@ -68,8 +70,79 @@ public class FacultyServiceImpl implements FacultyService {
 		facultyDao.deleteFaculty(fid);
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value())
 				.message("User Deleted Successfully").body(null).build();
-		
+
 		ResponseEntity re = ResponseEntity.status(HttpStatus.OK).body(rs);
 		return re;
 	}
+
+	@Override
+	public ResponseEntity<?> findAllFaculty() {
+
+		List<FacultyProfile> allFAculty = facultyDao.findAllFaculty();
+		if (allFAculty.isEmpty()) {
+			throw UserNotFoundException.builder().message("No Faculty found").build();
+		}
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.FOUND.value())
+				.message("List of all Faculties").body(allFAculty).build();
+		ResponseEntity re = ResponseEntity.status(HttpStatus.FOUND).body(rs);
+		return re;
+	}
+
+	@Override
+	public ResponseEntity<?> findFacultyByDepartment(String dName) {
+
+		List<FacultyProfile> allFaculty = facultyDao.findAllFaculty();
+		if (allFaculty.isEmpty()) {
+			throw UserNotFoundException.builder().message("No Faculty Found").build();
+		}
+
+		Optional<Department> byName = departmentDao.findByName(dName);
+		if (byName.isEmpty()) {
+			throw NoDepartmentFoundException.builder().message("NO Department found " + dName).build();
+		}
+
+		List<FacultyProfile> afind = new ArrayList<>();
+		for (FacultyProfile u : allFaculty) {
+			if (u.getDepartment().getName().equalsIgnoreCase(dName)) {
+				afind.add(u);
+			}
+		}
+
+		if (afind.isEmpty()) {
+			throw UserNotFoundException.builder().message("No Faculty Found in the Department " + dName).build();
+		}
+
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.FOUND.value())
+				.message("List of All faculties in the department " + dName).body(afind).build();
+		
+		ResponseEntity re = ResponseEntity.status(HttpStatus.FOUND).body(rs);
+		return re;
+	}
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

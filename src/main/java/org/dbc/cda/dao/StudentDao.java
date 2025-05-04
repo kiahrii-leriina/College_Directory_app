@@ -1,5 +1,6 @@
 package org.dbc.cda.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.dbc.cda.entities.StudentProfile;
@@ -23,6 +24,10 @@ public class StudentDao {
 
 	public void deleteStudent(long sid) {
 		studentReposiroty.deleteById(sid);
+	}
+
+	public List<StudentProfile> findAll() {
+		return studentReposiroty.findAll();
 	}
 
 
